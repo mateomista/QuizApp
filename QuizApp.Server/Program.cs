@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using QuizApp.Server.Data;
+using QuizApp.Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,8 +9,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<QuizDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("QuizDBConnection")));
 
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<QuizService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirAngular", policy =>
+    {
+        policy.WithOrigins("https://localhost:4200") // Permite Angular
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 
 app.UseDefaultFiles();
@@ -24,6 +40,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("PermitirAngular");
 
 app.MapFallbackToFile("/index.html");
 

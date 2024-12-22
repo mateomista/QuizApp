@@ -4,16 +4,21 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { QuizComponent } from './quiz/quiz.component';
+import { QuizService } from './quiz/quiz.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    QuizComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [QuizService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
